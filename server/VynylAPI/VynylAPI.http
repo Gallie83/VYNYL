@@ -1,0 +1,6 @@
+@VynylAPI_HostAddress = http://localhost:5034
+
+GET {{VynylAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
