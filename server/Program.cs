@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var dbPassword = Env.GetString("DB_PASSWORD");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
-options.UseNpgsql("Host=localhost; Database=vynyl; Username=postgres; Password=Indigo76!"));
+options.UseNpgsql($"Host=localhost; Database=vynyl; Username=postgres; Password={dbPassword}"));
 
 var app = builder.Build();
 
