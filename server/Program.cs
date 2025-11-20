@@ -3,13 +3,15 @@ using DotNetEnv;
 
 Env.Load();
 
+var dbPassword = Env.GetString("DB_PASSWORD");
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var dbPassword = Env.GetString("DB_PASSWORD");
 
+builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
 options.UseNpgsql($"Host=localhost; Database=vynyl; Username=postgres; Password={dbPassword}"));
 
@@ -23,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 var summaries = new[]
 {
@@ -44,6 +46,7 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
