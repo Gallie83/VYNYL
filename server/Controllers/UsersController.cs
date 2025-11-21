@@ -23,6 +23,11 @@ public class UsersController : ControllerBase
     {
         _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetAllUsers), new { id = newUser.Id }, newUser)
+
+        return CreatedAtAction(
+            nameof(GetAllUsers), 
+            new { id = newUser.Id }, 
+            newUser
+            );
     }
 }

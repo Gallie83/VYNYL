@@ -19,6 +19,7 @@ function HomePage() {
   
   const [albumsByGenre, setAlbumsByGenre] = useState<AlbumsByGenre>({});
   const [tags, setTags] = useState<string[]>([])
+  const [displayCount, setDisplayCount] = useState(10);
 
   const carouselRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -110,78 +111,78 @@ function HomePage() {
 
   return (
     <>
-        {/* Display genres with best albums  */}
-        {Object.entries(albumsByGenre).map(([genre, albums]) => (
-        <div 
-            id="controls-carousel" 
-            className="relative w-full" 
-            data-carousel="static"
-            key={genre}
+      {/* Display genres with best albums  */}
+      {Object.entries(albumsByGenre).slice(0, displayCount).map(([genre, albums]) => (
+      <div 
+          id="controls-carousel" 
+          className="relative w-full" 
+          data-carousel="static"
+          key={genre}
         >
-            {/* Genre Title */}
-            <h1>{genre.toUpperCase()}</h1>
-            {/* Carousel wrapper */}
-            <div 
-            className="relative bg-pink-300 overflow-x-auto rounded-lg mb-5 md:h-80 scroll-bar"
-                ref={(el) => (carouselRefs.current[genre] = el)}
-                style={{ scrollSnapType: "x mandatory"}}
-            >
-                {/* Carousel Items */}
-                <div 
-                className="flex gap-5 ease-in-out" 
-                data-carousel-item
-                >
-                {albums.map((album) => (
-                <Link
-                    to={`/album-info/${encodeURIComponent(album.artist)}/${encodeURIComponent(album.title)}`}
-                    className="bg-slate-500 px-3 py-2 mx-3 my-2 rounded-lg"
-                    key={album.id}
-                >
-                    <div className='h-48 w-48'>
-                    <img className="object-fill" src={album.imageUrl} alt="Album art" />
-                    </div>
-                    <div className='mt-3'>
-                    <h2 className="font-bold text-ellipsis overflow-hidden line-clamp-2">{album.title}</h2>
-                    <p className='text-ellipsis overflow-hidden line-clamp-1'>{album.artist}</p>
-                    </div>
-                </Link>
-                ))}
-            </div>
-            </div>
+          {/* Genre Title */}
+          <h1>{genre.toUpperCase()}</h1>
+          {/* Carousel wrapper */}
+          <div 
+          className="relative bg-pink-300 overflow-x-auto rounded-lg mb-5 md:h-80 scroll-bar"
+              ref={(el) => {carouselRefs.current[genre] = el}}
+              style={{ scrollSnapType: "x mandatory"}}
+          >
+              {/* Carousel Items */}
+              <div 
+              className="flex gap-5 ease-in-out" 
+              data-carousel-item
+              >
+              {albums.map((album) => (
+              <Link
+                  to={`/album-info/${encodeURIComponent(album.artist)}/${encodeURIComponent(album.title)}`}
+                  className="bg-slate-500 px-3 py-2 mx-3 my-2 rounded-lg"
+                  key={album.id}
+              >
+                  <div className='h-48 w-48'>
+                  <img className="object-fill" src={album.imageUrl} alt="Album art" />
+                  </div>
+                  <div className='mt-3'>
+                  <h2 className="font-bold text-ellipsis overflow-hidden line-clamp-2">{album.title}</h2>
+                  <p className='text-ellipsis overflow-hidden line-clamp-1'>{album.artist}</p>
+                  </div>
+              </Link>
+              ))}
+          </div>
+          </div>
 
 
-        {/* Slider controls */}
-            <button
-            type="button"
-            className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-            onClick={() => scrollCarousel(genre, "prev")}
-            >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50">
-                <svg
-                className="w-4 h-4 text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 6 10"
-                >
-                <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 1 1 5l4 4"
-                />
-                </svg>
-                <span className="sr-only">Previous</span>
-            </span>
-            </button>
-            <button
+      {/* Slider controls */}
+        <button
+          type="button"
+          className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          onClick={() => scrollCarousel(genre, "prev")}
+          >
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50">
+            <svg
+              className="w-4 h-4 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+              >
+              <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 1 1 5l4 4"
+              />
+              </svg>
+              <span className="sr-only">Previous</span>
+          </span>
+          </button>
+          <button
             type="button"
             className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             onClick={() => scrollCarousel(genre, "next")}
             >
             <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50">
-                <svg
+              <svg
                 className="w-4 h-4 text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
@@ -196,11 +197,18 @@ function HomePage() {
                     d="m1 9 4-4-4-4"
                 />
                 </svg>
-                <span className="sr-only">Next</span>
+              <span className="sr-only">Next</span>
             </span>
-            </button>
-        </div>
-        ))}
+          </button>
+      </div>
+      ))}
+      {displayCount < Object.keys(albumsByGenre).length && (
+        <button
+          onClick={() => setDisplayCount(prev => prev + 10)}
+          >
+          Show More
+        </button>
+      )}
     </>
   )
 }
