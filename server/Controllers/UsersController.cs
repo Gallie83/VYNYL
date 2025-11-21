@@ -17,4 +17,12 @@ public class UsersController : ControllerBase
     {
         return await _context.Users.ToListAsync(); 
     }
+
+    [HttpPost]
+    public async Task<ActionResult<User>> AddNewUser([FromBody] User newUser)
+    {
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetAllUsers), new { id = newUser.Id }, newUser)
+    }
 }
