@@ -123,12 +123,12 @@ function HomePage() {
           <h1>{genre.toUpperCase()}</h1>
           {/* Carousel wrapper */}
           <div 
-          className="relative bg-pink-300 overflow-x-auto rounded-lg mb-5 md:h-80 scroll-bar"
-              ref={(el) => {carouselRefs.current[genre] = el}}
-              style={{ scrollSnapType: "x mandatory"}}
-          >
-              {/* Carousel Items */}
-              <div 
+            className="relative bg-pink-300 overflow-x-auto rounded-lg mb-5 md:h-80 scroll-bar"
+                ref={(el) => {carouselRefs.current[genre] = el}}
+                style={{ scrollSnapType: "x mandatory"}}
+            >
+            {/* Carousel Items */}
+            <div
               className="flex gap-5 ease-in-out" 
               data-carousel-item
               >
@@ -147,7 +147,7 @@ function HomePage() {
                   </div>
               </Link>
               ))}
-          </div>
+            </div>
           </div>
 
 
