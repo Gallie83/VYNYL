@@ -134,10 +134,9 @@ function HomePage() {
               >
               {albums.map((album) => (
               <Link
-                  to={`/album-info/${encodeURIComponent(album.artist)}/${encodeURIComponent(album.title)}`}
-                  className="bg-slate-500 px-3 py-2 mx-3 my-2 rounded-lg"
-                  key={album.id}
-              >
+                to={`/album-info/${encodeURIComponent(album.artist)}/${encodeURIComponent(album.title)}`}
+                className="bg-slate-500 px-3 py-2 mx-3 my-2 rounded-lg"
+                key={album.id}>
                   <div className='h-48 w-48'>
                   <img className="object-fill" src={album.imageUrl} alt="Album art" />
                   </div>

@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage.tsx'
 import { AuthProvider } from './contexts/AuthContext/AuthContext.tsx'
 import { AlbumProvider } from './contexts/AlbumContext/AlbumContext.tsx'
 import { GroupProvider } from './contexts/GroupContext/GroupContext.tsx'
+import AlbumInfo from './pages/AlbumInfo.tsx'
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />
+      },
+      {
+        path: '/album-info/:artistName/:albumName',
+        element: <AlbumInfo />
       }
     ]
   }

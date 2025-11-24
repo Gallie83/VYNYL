@@ -1,4 +1,4 @@
-import React, {createContext, useState, Dispatch, SetStateAction, useEffect} from "react";
+import React, {createContext, useState, type Dispatch, type SetStateAction, useEffect} from "react";
 
 interface AuthState {
     isAuthenticated: boolean,
