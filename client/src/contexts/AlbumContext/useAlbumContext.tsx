@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AlbumContext, AlbumContextType } from './AlbumContext'
+import { AlbumContext, type AlbumContextType } from './AlbumContext'
 
 // Hook for using AlbumContext
 export const useAlbumContext = (): AlbumContextType => {

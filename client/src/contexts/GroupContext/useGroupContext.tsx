@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GroupContext, GroupContextType } from './GroupContext'
+import { GroupContext, type GroupContextType } from './GroupContext'
 
 // Hook for using GroupContext
 export const useGroupContext = (): GroupContextType => {

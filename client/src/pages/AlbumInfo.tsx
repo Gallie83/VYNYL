@@ -1,15 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router"
-import RatingModal from "../../modals/RatingModal";
-import AuthModal from "../../modals/AuthModal"
-import { useAuth } from "../../contexts/AuthContext/useAuth";
-import { useAlbumContext } from "../../contexts/AlbumContext/useAlbumContext";
-import { useGroupContext } from "../../contexts/GroupContext/useGroupContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark } from '@fortawesome/free-solid-svg-icons';
-import { handleLogin } from "../../utils/authUtils";
+import RatingModal from "../modals/RatingModal";
+import AuthModal from "../modals/AuthModal"
+import { useAuth } from "../contexts/AuthContext/useAuth";
+import { useAlbumContext } from "../contexts/AlbumContext/useAlbumContext";
+import { useGroupContext } from "../contexts/GroupContext/useGroupContext";
+import { Bookmark } from "lucide-react";
+import { handleLogin } from "../utils/authUtils";
 import toast from "react-hot-toast";
-import CreateGroupModal from "../../modals/CreateGroupModal";
+import CreateGroupModal from "../modals/CreateGroupModal";
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 
@@ -389,10 +388,9 @@ function AlbumInfo() {
                 <br />
 
                 {/* Bookmark Icon */}
-                <FontAwesomeIcon 
+                <Bookmark
                   data-testid="bookmark-button"
                   onClick={() => toggleBookmarkFunction(album.hashId, album.title, album.artist, 0)} 
-                  icon={faBookmark} 
                   color={ isSaved ? 'black' : 'white'} />
               </div>
 
