@@ -365,7 +365,7 @@ function AlbumInfo() {
                               </button>
                             ))
                           ) : (
-                            // If no usersGroups, link to open CreatGroupModal
+                            // If no usersGroups, link to open CreateGroupModal
                             <div className="p-3 flex flex-col">
                               <div className="p-3 mx-auto">
                                 <b>No groups yet</b>

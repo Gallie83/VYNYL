@@ -4,4 +4,6 @@ public class User
     public required string CognitoId { get; set; }
     public required string Username { get; set; }
     public required string Email { get; set; }
+
+    public ICollection<UserAlbum> UserAlbum { get; set; }
 }
