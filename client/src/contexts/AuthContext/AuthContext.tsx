@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({children})
     })
 
     useEffect(() => {
-
         // Check if user is logged in 
         const checkAuth = async () => {
             try {
