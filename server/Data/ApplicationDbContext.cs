@@ -22,6 +22,6 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(u => u.Email).IsUnique();
         });
 
-        modelBuilder.Entity<UserAlbum>().hasKey(ua => new { ua.UserId, ua.AlbumId });
+        modelBuilder.Entity<UserAlbum>().HasKey(ua => new { ua.UserId, ua.AlbumId });
     }
 }
