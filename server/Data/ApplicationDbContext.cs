@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Album> Albums { get; set; }
     public DbSet<UserAlbum> UserAlbums { get; set; }
+    public DbSet<CustomList> CustomLists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,6 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(u => u.Email).IsUnique();
         });
 
-        modelBuilder.Entity<UserAlbum>().HasKey(ua => new { ua.UserId, ua.AlbumId });
+        modelBuilder.Entity<UserAlbum>().HasKey(ua => new { ua.UserId, ua.AlbumId, ua.ListType });
     }
 }

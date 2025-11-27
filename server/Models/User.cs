@@ -6,4 +6,5 @@ public class User
     public required string? Email { get; set; }
 
     public ICollection<UserAlbum> UserAlbums { get; set; } = new List<UserAlbum>();
+    public ICollection<CustomList> CustomLists { get; set; } = new List<CustomList>();
 }
