@@ -1,8 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+
 public class AddUserAlbumDto
 {
-    public string LastFmId { get; set; }
-    public string Title { get; set; }
-    public string Artist { get; set; }
-    public float Rating { get; set; }
-    public DateOnly DateListened { get; set; }
+    [Required]
+    public string? LastFmId { get; set; }
+
+    [Required]
+    public string? Title { get; set; }
+
+    [Required]
+    public string? Artist { get; set; }
+
+    public float? Rating { get; set; }
+    public DateOnly? DateListened { get; set; }
 }

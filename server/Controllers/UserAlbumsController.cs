@@ -37,9 +37,9 @@ public class UserAlbumsController : ControllerBase
         {
             album = new Album
             {
-                LastFmId = Album.LastFmId,
-                Title = Album.Title,
-                Artist = Album.Artist,
+                LastFmId = dto.LastFmId,
+                Title = dto.Title,
+                Artist = dto.Artist,
             };
 
         _context.Albums.Add(album);
@@ -48,7 +48,7 @@ public class UserAlbumsController : ControllerBase
 
         // Check if user already has this album
         var existingUserAlbum = await _context.UserAlbums
-        .FirstOrDefaultAsync(ua => ua.UserId == userId && ua.AlbumId == album.Id);
+            .FirstOrDefaultAsync(ua => ua.UserId == userId && ua.AlbumId == album.Id);
 
         if(existingUserAlbum != null)
         {
@@ -57,11 +57,11 @@ public class UserAlbumsController : ControllerBase
 
         var userAlbum = new UserAlbum
         {
-            UserId = UserAlbum.UserId;
-            AlbumId = UserAlbum.AlbumId;
-            Rating = UserAlbum.Rating;
-            DateListened = UserAlbum.DateListened;
-        }
+            UserId = userId,
+            AlbumId = album.Id,
+            Rating = dto.Rating,
+            DateListened = dto.DateListened
+        };
 
         _context.UserAlbums.Add(userAlbum);
         await _context.SaveChangesAsync();
