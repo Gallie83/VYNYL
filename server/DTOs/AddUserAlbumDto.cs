@@ -11,6 +11,11 @@ public class AddUserAlbumDto
     [Required]
     public string? Artist { get; set; }
 
+    [Required]
+    public AlbumListType ListType { get; set; }
+
+    public int? CustomListId { get; set; }
+
     public float? Rating { get; set; }
     public DateOnly? DateListened { get; set; }
 }

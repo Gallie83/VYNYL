@@ -48,17 +48,39 @@ public class UserAlbumsController : ControllerBase
 
         // Check if user already has this album
         var existingUserAlbum = await _context.UserAlbums
-            .FirstOrDefaultAsync(ua => ua.UserId == userId && ua.AlbumId == album.Id);
+            .FirstOrDefaultAsync(ua => ua.UserId == userId 
+                                    && ua.AlbumId == album.Id
+                                    && ua.ListType == dto.ListType);
 
-        if(existingUserAlbum != null)
+        if (existingUserAlbum != null)
         {
             return Conflict("User already has this album");
+        }
+
+        // If it's a custom list ensure it has CustomListId
+        if (dto.ListType == AlbumListType.CustomList && dto.CustomListId == null)
+        {
+            return BadRequest("CustomListId is required when ListType is CustomList");
+        }
+
+        // Ensure custom list exists and belongs to this user
+        if (dto.ListType == AlbumListType.CustomList)
+        {
+            var customListExists = await _context.CustomLists
+                .AnyAsync(cl => cl.Id == dto.CustomListId && cl.UserId == userId);
+
+            if (!customListExists)
+            {
+                return NotFound("Custom List not found or does not belong to this user");
+            }
         }
 
         var userAlbum = new UserAlbum
         {
             UserId = userId,
             AlbumId = album.Id,
+            ListType = dto.ListType,
+            CustomListId = dto.CustomListId,
             Rating = dto.Rating,
             DateListened = dto.DateListened
         };
