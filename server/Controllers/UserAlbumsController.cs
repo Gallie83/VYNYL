@@ -13,12 +13,22 @@ public class UserAlbumsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(int userId)
+    public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(
+        int userId,
+        [FromQuery] AlbumListType listType,
+        [FromQuery] int? customListId = null)
     {
-        var userAlbums = await _context.UserAlbums
+        var query = _context.UserAlbums
             .Include(ua => ua.Album)
-            .Where(ua => ua.UserId == userId)
-            .ToListAsync();
+            .Where(ua => ua.UserId == userId && ua.ListType == listType);
+
+        // If CustomList then ensure listId is provided
+        if(listType == AlbumListType.CustomList && customListId.HasValue)
+        {
+            query = query.Where(ua => ua.CustomListId == customListId.Value);
+        }
+
+        var userAlbums = await query.ToListAsync();
 
         return userAlbums;
     }
