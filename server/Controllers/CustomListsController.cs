@@ -47,6 +47,30 @@ public class CustomListsController: ControllerBase
         return Ok(customList);
     }
 
+    [HttpPut("{listId}")]
+    public async Task<ActionResult<CustomList>> UpdateCustomListName(int userId, int listId, [FromBody] string name)
+    {
+
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            return BadRequest("Name cannot be empty");
+        }
+
+        // Find list and check it belongs to user
+        var customList = await _context.CustomLists
+            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == userId);
+
+        if(customList == null)
+        {
+            return NotFound("List not found or does not belong to user");
+        }
+
+        customList.Name = name;
+
+        await _context.SaveChangesAsync();
+        return customList;
+    }
+
     [HttpDelete("{listId}")]
     public async Task<ActionResult> DeleteCustomListById(int userId, int listId)
     {
@@ -56,7 +80,7 @@ public class CustomListsController: ControllerBase
 
         if(list == null) 
         {
-            return NotFound();
+            return NotFound("List not found or does not belong to user");
         }
 
         _context.CustomLists.Remove(list);
