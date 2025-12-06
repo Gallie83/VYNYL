@@ -12,6 +12,17 @@ public class CustomListsController: ControllerBase
         _context = context;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<CustomList>>> GetCustomLists(int userId)
+    {
+        var customLists = await _context.CustomLists
+            .Where(cl => cl.UserId == userId)
+            .OrderByDescending(cl => cl.CreatedAt)
+            .ToListAsync();
+
+        return customLists;
+    }
+
     [HttpPost]
     public async Task<ActionResult<CustomList>> CreateCustomList(
         int userId,
@@ -27,12 +38,30 @@ public class CustomListsController: ControllerBase
         {
             UserId = userId,
             Name = dto.Name,
-            CreateAt = DateOnly.FromDateTime(DateTime.Now)
+            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
         };
 
         _context.CustomLists.Add(customList);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetCustomList), new {userId, listId = customList.Id}, customList);
+        return Ok(customList);
     }
+
+    [HttpDelete("{listId}")]
+    public async Task<ActionResult> DeleteCustomListById(int userId, int listId)
+    {
+        // Find list and check it belongs to user
+        var list = await _context.CustomLists
+            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == userId);
+
+        if(list == null) 
+        {
+            return NotFound();
+        }
+
+        _context.CustomLists.Remove(list);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    } 
 }
