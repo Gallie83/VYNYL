@@ -12,6 +12,7 @@ public class UserAlbumsController : ControllerBase
         _context = context;
     }
 
+    // Get all user albums
     [HttpGet]
     public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(
         int userId,
@@ -33,6 +34,7 @@ public class UserAlbumsController : ControllerBase
         return userAlbums;
     }
 
+    // Add album to users list
     [HttpPost]
     public async Task<ActionResult<UserAlbum>> AddUserAlbum(
         int userId,
@@ -99,5 +101,45 @@ public class UserAlbumsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetUsersAlbums), new { userId }, userAlbum);
+    }
+
+    [HttpDelete("{albumId}")]
+    public async Task<ActionResult> RemoveAlbumFromList(
+        int userId,
+        int albumId,
+        [FromQuery] AlbumListType listType,
+        [FromQuery] int? customListId = null)  // Make it optional with default
+    {
+        // Validation for CustomList
+        if (listType == AlbumListType.CustomList)
+        {
+            if (!customListId.HasValue)
+            {
+                return BadRequest("customListId is required when listType is CustomList");
+            }
+        }
+        else if (customListId.HasValue)
+        {
+            // If it's NOT CustomList but customListId was provided, that's wrong
+            return BadRequest("customListId should only be provided for CustomList type");
+        }
+
+        // Find the specific UserAlbum
+        var userAlbum = await _context.UserAlbums
+            .FirstOrDefaultAsync(ua => ua.UserId == userId 
+                                    && ua.AlbumId == albumId
+                                    && ua.ListType == listType
+                                    && (listType != AlbumListType.CustomList 
+                                        || ua.CustomListId == customListId));
+
+        if (userAlbum == null)
+        {
+            return NotFound("Album not found in the specified list");
+        }
+
+        _context.UserAlbums.Remove(userAlbum);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 }
