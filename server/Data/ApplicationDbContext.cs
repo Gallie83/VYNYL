@@ -23,6 +23,14 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(u => u.Email).IsUnique();
         });
 
-        modelBuilder.Entity<UserAlbum>().HasKey(ua => new { ua.UserId, ua.AlbumId, ua.ListType });
+        modelBuilder.Entity<UserAlbum>()
+            .HasKey(ua => new { ua.UserId, ua.AlbumId, ua.ListType, ua.CustomListId });
+
+        modelBuilder.Entity<UserAlbum>()
+            .HasOne(ua => ua.CustomList)
+            .WithMany(cl => cl.UserAlbums)
+            .HasForeignKey(ua => ua.CustomListId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }

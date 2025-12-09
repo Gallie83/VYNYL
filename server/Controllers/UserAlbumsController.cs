@@ -17,16 +17,25 @@ public class UserAlbumsController : ControllerBase
     public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(
         int userId,
         [FromQuery] AlbumListType listType,
-        [FromQuery] int? customListId = null)
+        [FromQuery] int customListId = 0)
     {
         var query = _context.UserAlbums
             .Include(ua => ua.Album)
-            .Where(ua => ua.UserId == userId && ua.ListType == listType);
+            .Where(ua => ua.UserId == userId 
+                && ua.ListType == listType);
 
         // If CustomList then ensure listId is provided
-        if(listType == AlbumListType.CustomList && customListId.HasValue)
+        if(listType == AlbumListType.CustomList)
         {
-            query = query.Where(ua => ua.CustomListId == customListId.Value);
+            if(customListId <= 0) 
+            {
+                return BadRequest("Invalid CustomListId");
+            }
+            query = query.Where(ua => ua.CustomListId == customListId);
+        }
+        else
+        {
+            query = query.Where(ua => ua.CustomListId == 0);
         }
 
         var userAlbums = await query.ToListAsync();
@@ -66,17 +75,17 @@ public class UserAlbumsController : ControllerBase
 
         if (existingUserAlbum != null)
         {
-            return Conflict("User already has this album");
+            return Conflict("User's list already has this album");
         }
 
         // If it's a custom list ensure it has CustomListId
-        if (dto.ListType == AlbumListType.CustomList && dto.CustomListId == null)
+        if (dto.ListType == AlbumListType.CustomList && dto.CustomListId <= 0)
         {
             return BadRequest("CustomListId is required when ListType is CustomList");
         }
 
         // Ensure custom list exists and belongs to this user
-        if (dto.ListType == AlbumListType.CustomList)
+        if (dto.ListType == AlbumListType.CustomList && dto.CustomListId > 0)
         {
             var customListExists = await _context.CustomLists
                 .AnyAsync(cl => cl.Id == dto.CustomListId && cl.UserId == userId);
@@ -85,6 +94,11 @@ public class UserAlbumsController : ControllerBase
             {
                 return NotFound("Custom List not found or does not belong to this user");
             }
+        }
+
+        if(dto.ListType != AlbumListType.CustomList && dto.CustomList != 0)
+        {
+            return BadRequest("CustomListId must be 0 for non-CustomList types");
         }
 
         var userAlbum = new UserAlbum
@@ -108,20 +122,20 @@ public class UserAlbumsController : ControllerBase
         int userId,
         int albumId,
         [FromQuery] AlbumListType listType,
-        [FromQuery] int? customListId = null)  // Make it optional with default
+        [FromQuery] int customListId = 0)
     {
         // Validation for CustomList
         if (listType == AlbumListType.CustomList)
         {
-            if (!customListId.HasValue)
+            if (customListId <= 0)
             {
-                return BadRequest("customListId is required when listType is CustomList");
+                return BadRequest("Invalid customListId");
             }
         }
-        else if (customListId.HasValue)
+        else if (customListId != 0)
         {
-            // If it's NOT CustomList but customListId was provided, that's wrong
-            return BadRequest("customListId should only be provided for CustomList type");
+            // If it's not CustomList but customListId was provided
+            return BadRequest("customListId must be 0 for non-CustomList types");
         }
 
         // Find the specific UserAlbum
@@ -129,8 +143,7 @@ public class UserAlbumsController : ControllerBase
             .FirstOrDefaultAsync(ua => ua.UserId == userId 
                                     && ua.AlbumId == albumId
                                     && ua.ListType == listType
-                                    && (listType != AlbumListType.CustomList 
-                                        || ua.CustomListId == customListId));
+                                    && ua.CustomListId == customListId);
 
         if (userAlbum == null)
         {

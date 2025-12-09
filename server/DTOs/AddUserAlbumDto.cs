@@ -14,7 +14,7 @@ public class AddUserAlbumDto
     [Required]
     public AlbumListType ListType { get; set; }
 
-    public int? CustomListId { get; set; }
+    public int CustomListId { get; set; } = 0;
 
     public float? Rating { get; set; }
     public DateOnly? DateListened { get; set; }

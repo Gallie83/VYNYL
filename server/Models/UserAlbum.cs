@@ -7,7 +7,7 @@ public class UserAlbum
     // What type of list is it?
     public AlbumListType ListType { get; set; }
     
-    public int? CustomListId { get; set; }
+    public int CustomListId { get; set; } = 0;
 
     // Navigation Properties
     public int UserId { get; set; }

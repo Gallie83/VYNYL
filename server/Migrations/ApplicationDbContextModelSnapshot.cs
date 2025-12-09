@@ -118,7 +118,7 @@ namespace VynylAPI.Migrations
                     b.Property<float?>("Rating")
                         .HasColumnType("real");
 
-                    b.HasKey("UserId", "AlbumId", "ListType");
+                    b.HasKey("UserId", "AlbumId", "ListType", "CustomListId");
 
                     b.HasIndex("AlbumId");
 
@@ -148,7 +148,9 @@ namespace VynylAPI.Migrations
 
                     b.HasOne("CustomList", "CustomList")
                         .WithMany("UserAlbums")
-                        .HasForeignKey("CustomListId");
+                        .HasForeignKey("CustomListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("User", "User")
                         .WithMany("UserAlbums")
