@@ -96,7 +96,7 @@ public class UserAlbumsController : ControllerBase
             }
         }
 
-        if(dto.ListType != AlbumListType.CustomList && dto.CustomList != 0)
+        if(dto.ListType != AlbumListType.CustomList && dto.CustomListId != 0)
         {
             return BadRequest("CustomListId must be 0 for non-CustomList types");
         }
