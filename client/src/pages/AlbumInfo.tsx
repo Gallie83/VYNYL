@@ -9,7 +9,9 @@ import { Bookmark } from "lucide-react";
 import { handleLogin } from "../utils/authUtils";
 import toast from "react-hot-toast";
 import CreateGroupModal from "../modals/CreateGroupModal";
+// ShadCn imports
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
+import { Menubar, MenubarContent, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar"
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 
@@ -290,6 +292,68 @@ function AlbumInfo() {
             <div className="w-3/5 text-black bg-green-300 flex flex-col justify-between p-6 px-16 leading-normal">
 
               <div>
+
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger 
+          onClick={() => openRatingModal(album.hashId)}
+          data-testid="toggleModalButton">
+            Add
+        </MenubarTrigger>
+      </MenubarMenu>
+
+      <MenubarMenu>
+        <MenubarTrigger 
+          onClick={() => setShowGroupDropdown(!showGroupDropdown)}>
+          Add to Group
+        </MenubarTrigger>
+        
+        <MenubarContent>
+          { showGroupDropdown && (
+            <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex={-1}>
+              <div className="py-1" role="none">
+                {/* Conditionally render usersGroups if user is logged in */}
+                {isAuthenticated ? (
+                  // Check if usersGroups has content
+                  usersGroups && usersGroups.length > 0 ? (
+                    usersGroups.map((group: { _id: string; title: string }) => (
+                      <button
+                        key={group._id}
+                        onClick={() => addToGroup(group._id, album.title, album.artist, album.hashId)}
+                        className="block px-4 py-2 text-sm text-gray-700"
+                      >
+                        {group.title}
+                      </button>
+                    ))
+                  ) : (
+                    // If no usersGroups, link to open CreateGroupModal
+                    <div className="p-3 flex flex-col">
+                      <div className="p-3 mx-auto">
+                        <b>No groups yet</b>
+                      </div>
+                      <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow" onClick={() => setIsCreateGroupModalOpen(true)}>Create Group?</button>
+                    </div>
+                  )
+                ) : (
+                  <div className="p-3">
+                    <p><button onClick={handleLogin} className="text-blue-700">Login</button> to access group features</p>
+                    </div>
+                )}
+              </div>
+            </div>
+          )}
+        </MenubarContent>
+      </MenubarMenu>
+
+      <MenubarMenu>
+        {/* Bookmark Icon */}
+          <Bookmark
+            data-testid="bookmark-button"
+            onClick={() => toggleBookmarkFunction(album.hashId, album.title, album.artist, 0)} 
+            color={ isSaved ? 'black' : 'orange'} />
+      </MenubarMenu>
+    </Menubar>
+
             {/* Opens RatingModal */}
                 <button 
                   onClick={() => openRatingModal(album.hashId)}
@@ -366,7 +430,7 @@ function AlbumInfo() {
               defaultValue="item-1"
             >
               <AccordionItem value="item-1">
-                <AccordionTrigger>Description</AccordionTrigger>
+                <AccordionTrigger className="hover:cursor-pointer">Description</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                   <div data-testid="description" className="mt-4 border-t pt-4 overflow-y-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                     {album.description}
@@ -374,7 +438,7 @@ function AlbumInfo() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Track List</AccordionTrigger>
+                <AccordionTrigger className="hover:cursor-pointer">Track List</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                 <div className="mt-4 border-t pt-4 overflow-y-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                   {album.trackList.map((track, index) => (
