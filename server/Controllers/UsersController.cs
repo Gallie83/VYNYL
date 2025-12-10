@@ -12,12 +12,14 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
+    // Get a list of all users
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
         return await _context.Users.ToListAsync(); 
     }
 
+    // Add new user
     [HttpPost]
     public async Task<ActionResult<User>> AddNewUser([FromBody] User newUser)
     {
@@ -31,6 +33,7 @@ public class UsersController : ControllerBase
             );
     }
 
+    // Search for user by Id
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUserById(int id)
     {
@@ -38,6 +41,7 @@ public class UsersController : ControllerBase
         return user == null ?  NotFound() : user;
     }
 
+    // Update User by Id
     [HttpPut("{id}")]
     public async Task<ActionResult<User>> UpdateUserById(int id, [FromBody] User updatedUser)
     {
@@ -56,6 +60,7 @@ public class UsersController : ControllerBase
         return user;
     }
 
+    // Delete User
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUserById(int id)
     {

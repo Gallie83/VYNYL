@@ -12,6 +12,7 @@ public class AlbumsController : ControllerBase
         _context = context;
     }
 
+    // Get specific album instance by Id
     [HttpGet("{id}")]
     public async Task<ActionResult<Album>> GetAlbumById(int id)
     {

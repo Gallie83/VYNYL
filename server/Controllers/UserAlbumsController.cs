@@ -12,7 +12,7 @@ public class UserAlbumsController : ControllerBase
         _context = context;
     }
 
-    // Get all user albums
+    // Get all user's albums
     [HttpGet]
     public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(
         int userId,
@@ -43,7 +43,7 @@ public class UserAlbumsController : ControllerBase
         return userAlbums;
     }
 
-    // Add album to users list
+    // Add album to user's list
     [HttpPost]
     public async Task<ActionResult<UserAlbum>> AddUserAlbum(
         int userId,
@@ -117,6 +117,7 @@ public class UserAlbumsController : ControllerBase
         return CreatedAtAction(nameof(GetUsersAlbums), new { userId }, userAlbum);
     }
 
+    // Remove album from user's list
     [HttpDelete("{albumId}")]
     public async Task<ActionResult> RemoveAlbumFromList(
         int userId,

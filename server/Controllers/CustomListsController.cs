@@ -12,6 +12,7 @@ public class CustomListsController: ControllerBase
         _context = context;
     }
 
+    // Get list of all user's CustomLists
     [HttpGet]
     public async Task<ActionResult<List<CustomList>>> GetCustomLists(int userId)
     {
@@ -23,6 +24,7 @@ public class CustomListsController: ControllerBase
         return customLists;
     }
 
+    // Create new CustomList for user
     [HttpPost]
     public async Task<ActionResult<CustomList>> CreateCustomList(
         int userId,
@@ -47,6 +49,7 @@ public class CustomListsController: ControllerBase
         return Ok(customList);
     }
 
+    // Update user's CustomList name
     [HttpPut("{listId}")]
     public async Task<ActionResult<CustomList>> UpdateCustomListName(int userId, int listId, [FromBody] string name)
     {
@@ -71,6 +74,7 @@ public class CustomListsController: ControllerBase
         return customList;
     }
 
+    // Delete CustomList
     [HttpDelete("{listId}")]
     public async Task<ActionResult> DeleteCustomListById(int userId, int listId)
     {
