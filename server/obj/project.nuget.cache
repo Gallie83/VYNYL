@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "2gF+AVewvhY=",
+  "dgSpecHash": "haojyBzw1L4=",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\OneDrive\\Documents\\GitHub\\Vynyl\\vynyl\\server\\VynylAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\amazon.extensions.cognitoauthentication\\3.1.2\\amazon.extensions.cognitoauthentication.3.1.2.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\awssdk.cognitoidentity\\4.0.2.4\\awssdk.cognitoidentity.4.0.2.4.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\awssdk.cognitoidentityprovider\\4.0.4.7\\awssdk.cognitoidentityprovider.4.0.4.7.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\awssdk.core\\4.0.3.5\\awssdk.core.4.0.3.5.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\awssdk.securitytoken\\4.0.3.2\\awssdk.securitytoken.4.0.3.2.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\dotnetenv\\3.1.1\\dotnetenv.3.1.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.0\\microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",

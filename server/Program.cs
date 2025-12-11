@@ -1,10 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using server.Data;
 using System.Text.Json.Serialization;
 
-Env.Load();
+// Access AWS Cognito values:
+var awsRegion = builder.Configuration["AWS:Region"];
+var clientId = builder.Configuration["AWS:ClientId"];
+var clientSecret = builder.Configuration["AWS:ClientSecret"];
 
-var dbPassword = Env.GetString("DB_PASSWORD");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseNpgsql($"Host=localhost; Database=vynyl; Username=postgres; Password={dbPassword}"));
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 

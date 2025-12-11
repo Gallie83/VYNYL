@@ -12,6 +12,8 @@ node_modules/
 dist
 dist-ssr
 *.local
+server/appsettings.Development.json
+server/appsettings.Production.json
 
 # Editor directories and files
 .vscode/*
