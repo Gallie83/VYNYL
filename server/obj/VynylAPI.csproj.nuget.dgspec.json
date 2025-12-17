@@ -46,7 +46,7 @@
           "dependencies": {
             "AWSSDK.CognitoIdentityProvider": {
               "target": "Package",
-              "version": "[4.0.4.7, )"
+              "version": "[4.0.4.8, )"
             },
             "Amazon.Extensions.CognitoAuthentication": {
               "target": "Package",
@@ -55,6 +55,10 @@
             "DotNetEnv": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
