@@ -1,27 +1,31 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; 
 
 [ApiController]
-[Route("api/users/{userId}/albums")]
-public class UserAlbumsController : ControllerBase
+[Route("api/[controller]")]
+[Authorize]
+public class UserAlbumsController : AuthenticatedControllerBase
 {
-    private readonly ApplicationDbContext _context;
 
-    public UserAlbumsController(ApplicationDbContext context)
+    public UserAlbumsController(ApplicationDbContext context) : base(context)
     {
-        _context = context;
+
     }
 
     // Get all user's albums
     [HttpGet]
     public async Task<ActionResult<List<UserAlbum>>> GetUsersAlbums(
-        int userId,
         [FromQuery] AlbumListType listType,
         [FromQuery] int customListId = 0)
     {
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
+
         var query = _context.UserAlbums
             .Include(ua => ua.Album)
-            .Where(ua => ua.UserId == userId 
+            .Where(ua => ua.UserId == user.Id 
                 && ua.ListType == listType);
 
         // If CustomList then ensure listId is provided
@@ -45,10 +49,12 @@ public class UserAlbumsController : ControllerBase
 
     // Add album to user's list
     [HttpPost]
-    public async Task<ActionResult<UserAlbum>> AddUserAlbum(
-        int userId,
-        [FromBody] AddUserAlbumDto dto)
+    public async Task<ActionResult<UserAlbum>> AddUserAlbum(AddUserAlbumDto dto)
     {
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
+
         // Check if album is in Albums table
         var album = await _context.Albums
             .FirstOrDefaultAsync(a => a.LastFmId == dto.LastFmId);
@@ -69,7 +75,7 @@ public class UserAlbumsController : ControllerBase
 
         // Check if user already has this album
         var existingUserAlbum = await _context.UserAlbums
-            .FirstOrDefaultAsync(ua => ua.UserId == userId 
+            .FirstOrDefaultAsync(ua => ua.UserId == user.Id 
                                     && ua.AlbumId == album.Id
                                     && ua.ListType == dto.ListType);
 
@@ -88,7 +94,7 @@ public class UserAlbumsController : ControllerBase
         if (dto.ListType == AlbumListType.CustomList && dto.CustomListId > 0)
         {
             var customListExists = await _context.CustomLists
-                .AnyAsync(cl => cl.Id == dto.CustomListId && cl.UserId == userId);
+                .AnyAsync(cl => cl.Id == dto.CustomListId && cl.UserId == user.Id);
 
             if (!customListExists)
             {
@@ -103,7 +109,7 @@ public class UserAlbumsController : ControllerBase
 
         var userAlbum = new UserAlbum
         {
-            UserId = userId,
+            UserId = user.Id,
             AlbumId = album.Id,
             ListType = dto.ListType,
             CustomListId = dto.CustomListId,
@@ -114,17 +120,20 @@ public class UserAlbumsController : ControllerBase
         _context.UserAlbums.Add(userAlbum);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetUsersAlbums), new { userId }, userAlbum);
+        return CreatedAtAction(nameof(GetUsersAlbums), null, userAlbum);
     }
 
     // Remove album from user's list
     [HttpDelete("{albumId}")]
     public async Task<ActionResult> RemoveAlbumFromList(
-        int userId,
         int albumId,
         [FromQuery] AlbumListType listType,
         [FromQuery] int customListId = 0)
     {
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
+        
         // Validation for CustomList
         if (listType == AlbumListType.CustomList)
         {
@@ -141,7 +150,7 @@ public class UserAlbumsController : ControllerBase
 
         // Find the specific UserAlbum
         var userAlbum = await _context.UserAlbums
-            .FirstOrDefaultAsync(ua => ua.UserId == userId 
+            .FirstOrDefaultAsync(ua => ua.UserId == user.Id 
                                     && ua.AlbumId == albumId
                                     && ua.ListType == listType
                                     && ua.CustomListId == customListId);

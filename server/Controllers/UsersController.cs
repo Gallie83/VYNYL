@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UsersController : ControllerBase
+public class UsersController : AuthenticatedControllerBase
 {
-    private readonly ApplicationDbContext _context;
     
-    public UsersController(ApplicationDbContext context)
+    public UsersController(ApplicationDbContext context) : base(context)
     {
-        _context = context;
+        
     }
 
     // Get current authenticated user
@@ -19,20 +18,9 @@ public class UsersController : ControllerBase
     [HttpGet("me")]
     public async Task<ActionResult<User>> GetCurrentUser()
     {
-        var cognitoId = AuthHelper.GetCognitoIdFromClaims(User);
-
-        if(string.IsNullOrEmpty(cognitoId))
-        {
-            return Unauthorized("Invalid token");
-        }
-
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.CognitoId == cognitoId);
-
-        if(user == null)
-        {
-            return NotFound("User not found");
-        }
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
 
         return Ok(user);
     }
@@ -66,7 +54,7 @@ public class UsersController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return CreateAtAction(nameof(GetCurrentUser), new { }, user);
+        return CreatedAtAction(nameof(GetCurrentUser), new { }, user);
     }
 
     // Search for user by username
@@ -83,19 +71,9 @@ public class UsersController : ControllerBase
     [HttpPut("me")]
     public async Task<ActionResult<User>> UpdateCurrentUser(User updatedUser)
     {
-        var cognitoId = AuthHelper.GetCognitoIdFromClaims(User);
-
-        if(string.IsNullOrEmpty(cognitoId))
-        {
-            return Unauthorized("Invalid token");
-        }
-
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.CognitoId == cognitoId);
-
-        if(user == null) 
-        {
-            return NotFound("User not found");
-        } 
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
 
         user.Username = updatedUser.Username;
         user.Email = updatedUser.Email;
@@ -115,19 +93,9 @@ public class UsersController : ControllerBase
     [HttpDelete("me")]
     public async Task<ActionResult> DeleteCurrentUser()
     {
-        var cognitoId = AuthHelper.GetCognitoIdFromClaims(User);
-
-        if(string.IsNullOrEmpty(cognitoId))
-        {
-            return Unauthorized("Invalid token");
-        }
-
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.CognitoId == cognitoId);
-
-        if(user == null) 
-        {
-            return NotFound("User not found");
-        }
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
 
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();

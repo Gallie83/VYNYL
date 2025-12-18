@@ -1,23 +1,29 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; 
 
 [ApiController]
-[Route("api/users/{userId}/lists")]
-public class CustomListsController: ControllerBase
+[Route("api/users/lists/[controller]")]
+[Authorize]
+public class CustomListsController: AuthenticatedControllerBase
 {
-    private readonly ApplicationDbContext _context;
 
-    public CustomListsController(ApplicationDbContext context)
+    public CustomListsController(ApplicationDbContext context) : base(context)
     {
-        _context = context;
+
     }
 
     // Get list of all user's CustomLists
     [HttpGet]
-    public async Task<ActionResult<List<CustomList>>> GetCustomLists(int userId)
+    public async Task<ActionResult<List<CustomList>>> GetCustomLists()
     {
+
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
+
         var customLists = await _context.CustomLists
-            .Where(cl => cl.UserId == userId)
+            .Where(cl => cl.UserId == user.Id)
             .OrderByDescending(cl => cl.CreatedAt)
             .ToListAsync();
 
@@ -26,19 +32,15 @@ public class CustomListsController: ControllerBase
 
     // Create new CustomList for user
     [HttpPost]
-    public async Task<ActionResult<CustomList>> CreateCustomList(
-        int userId,
-        [FromBody] CreateCustomListDto dto)
+    public async Task<ActionResult<CustomList>> CreateCustomList(CreateCustomListDto dto)
     {
-        var user = await _context.Users.FindAsync(userId);
-        if(user == null)
-        {
-            return NotFound();
-        }
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
 
         var customList = new CustomList
         {
-            UserId = userId,
+            UserId = user.Id,
             Name = dto.Name,
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
         };
@@ -51,8 +53,11 @@ public class CustomListsController: ControllerBase
 
     // Update user's CustomList name
     [HttpPut("{listId}")]
-    public async Task<ActionResult<CustomList>> UpdateCustomListName(int userId, int listId, [FromBody] string name)
+    public async Task<ActionResult<CustomList>> UpdateCustomListName(int listId, [FromBody] string name)
     {
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
 
         if(string.IsNullOrWhiteSpace(name))
         {
@@ -61,7 +66,7 @@ public class CustomListsController: ControllerBase
 
         // Find list and check it belongs to user
         var customList = await _context.CustomLists
-            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == userId);
+            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == user.Id);
 
         if(customList == null)
         {
@@ -76,11 +81,15 @@ public class CustomListsController: ControllerBase
 
     // Delete CustomList
     [HttpDelete("{listId}")]
-    public async Task<ActionResult> DeleteCustomListById(int userId, int listId)
+    public async Task<ActionResult> DeleteCustomListById(int listId)
     {
+        // Validate current cognito user
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return Unauthorized("Invalid token or user not found");
+
         // Find list and check it belongs to user
         var list = await _context.CustomLists
-            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == userId);
+            .FirstOrDefaultAsync(cl => cl.Id == listId && cl.UserId == user.Id);
 
         if(list == null) 
         {
