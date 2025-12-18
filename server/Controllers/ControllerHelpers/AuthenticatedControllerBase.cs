@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 public class AuthenticatedControllerBase : ControllerBase
 {
     protected readonly ApplicationDbContext _context;

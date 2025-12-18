@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VynylAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dfaa84bfac07f6f842da652fdebfba3d675237e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e2aa29a57cfc3adce8fa62efac36fc1b28c5e94")]
 [assembly: System.Reflection.AssemblyProductAttribute("VynylAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VynylAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
