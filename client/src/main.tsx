@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext/AuthContext.tsx'
 import { AlbumProvider } from './contexts/AlbumContext/AlbumContext.tsx'
 import { GroupProvider } from './contexts/GroupContext/GroupContext.tsx'
 import AlbumInfo from './pages/AlbumInfo.tsx'
+import { Callback } from './pages/Callback.tsx'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         element: <AlbumInfo />
       }
     ]
+  },
+  {
+    path: '/callback',
+    element: <Callback />
   }
 ])
 
